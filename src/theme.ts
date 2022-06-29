@@ -1,20 +1,20 @@
 import { createTheme } from '@mui/material';
 
-const secondaryDarkColour = '#304859';
-const secondaryMainColour = '#6395B8';
 const mainLightColour = '#FCFCFC';
+const primaryDarkColour = '#152938';
 
 export const theme = createTheme({
   palette: {
     primary: {
       light: '#FFB84A',
       main: '#FDA214',
+      dark: primaryDarkColour,
       contrastText: mainLightColour,
     },
     secondary: {
       light: '#BCCED9',
-      main: secondaryMainColour,
-      dark: secondaryDarkColour,
+      main: '#6395B8',
+      dark: '#304859',
       contrastText: mainLightColour,
     },
     background: {
@@ -50,38 +50,21 @@ export const theme = createTheme({
     },
   },
   components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: secondaryDarkColour,
-        },
-      },
-    },
     MuiToggleButton: {
       styleOverrides: {
         root: {
-          fontSize: 26,
           border: 0,
-          textTransform: 'none',
-          backgroundColor: secondaryDarkColour,
-          color: mainLightColour,
-          borderRadius: '70px !important',
-          paddingTop: 5,
-          paddingBottom: 5,
-          '&:hover': {
-            backgroundColor: secondaryMainColour,
-          },
         },
       },
+    },
+    MuiButtonBase: {
       defaultProps: {
         disableRipple: true,
       },
-    },
-    MuiToggleButtonGroup: {
       styleOverrides: {
         root: {
-          display: 'flex',
-          gap: 30,
+          border: 0,
+          borderRadius: '70px !important',
         },
       },
     },
