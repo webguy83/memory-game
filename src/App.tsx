@@ -17,7 +17,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {!isPlaying && <StartScreen setIsPlaying={setIsPlaying} gameConfigData={gameConfigData} setGameConfigData={setGameConfigData} />}
-      {isPlaying && <GameBoard />}
+      {isPlaying && <GameBoard gameConfigData={gameConfigData} />}
     </ThemeProvider>
   );
 }

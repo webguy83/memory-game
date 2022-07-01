@@ -3,18 +3,23 @@ import { Container } from '@mui/system';
 import GameButtonSecondary from '../Buttons/GameButtonSecondary';
 import GameButtonPrimary from '../Buttons/GameButtonPrimary';
 import Logo from '../Logo/Logo';
-import { HeaderStyles } from './GameBoard.styles';
+import { ButtonStyles, GameBoardContainerStyles, HeaderButtonStyles, HeaderStyles } from './GameBoard.styles';
 import MainArea from './MainArea/MainArea';
+import { GameConfigData } from '../../interfaces';
 
-export default function GameBoard() {
+interface GameBoardProps {
+  gameConfigData: GameConfigData;
+}
+
+export default function GameBoard({ gameConfigData }: GameBoardProps) {
   return (
-    <Container maxWidth='lg' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', minHeight: '100vh' }}>
+    <Container maxWidth='lg' sx={GameBoardContainerStyles}>
       <Box component='header' sx={HeaderStyles}>
         <Logo />
-        <GameButtonPrimary sx={{ fontSize: 20, px: 3, py: 1, ml: 'auto', mr: 2 }}>Restart</GameButtonPrimary>
-        <GameButtonSecondary sx={{ px: 3, py: 1 }}>New Game</GameButtonSecondary>
+        <GameButtonPrimary sx={{ ...ButtonStyles, ...HeaderButtonStyles }}>Restart</GameButtonPrimary>
+        <GameButtonSecondary sx={ButtonStyles}>New Game</GameButtonSecondary>
       </Box>
-      <MainArea />
+      <MainArea gameConfigData={gameConfigData} />
     </Container>
   );
 }

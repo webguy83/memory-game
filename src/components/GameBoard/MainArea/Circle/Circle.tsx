@@ -5,15 +5,14 @@ export default function Circle() {
     <Box
       sx={{
         backgroundColor: (theme) => theme.palette.secondary.dark,
-        width: 82,
-        height: 82,
         borderRadius: '50%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        aspectRatio: '1/1',
       }}
     >
-      4
+      <Box sx={{ fontSize: 44 }}>{Math.floor(Math.random() * 20)}</Box>
     </Box>
   );
 }
