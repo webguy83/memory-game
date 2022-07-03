@@ -3,3 +3,10 @@ export interface GameConfigData {
   numOfPlayers: number;
   gridSize: string;
 }
+
+export interface Item {
+  value: any;
+  index: number;
+  selected: boolean;
+  hasAlreadyBeenMatch: boolean;
+}

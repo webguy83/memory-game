@@ -64,7 +64,6 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           border: 0,
-          borderRadius: '70px !important',
         },
       },
     },

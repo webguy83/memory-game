@@ -3,6 +3,7 @@ import { styled, ToggleButton } from '@mui/material';
 export default styled(ToggleButton)(({ theme }) => ({
   fontSize: 26,
   textTransform: 'none',
+  borderRadius: '70px !important',
   backgroundColor: theme.palette.secondary.light,
   color: theme.palette.primary.contrastText,
   transition: theme.transitions.create(['background-color', 'opacity'], {
