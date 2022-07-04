@@ -44,6 +44,8 @@ export const theme = createTheme({
     },
     body1: {
       fontSize: 18,
+      fontWeight: 700,
+      color: '#7191A5',
     },
     button: {
       fontSize: 56,
