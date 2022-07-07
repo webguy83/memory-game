@@ -9,4 +9,7 @@ export default styled(Button)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.primary.light,
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 18,
+  },
 }));

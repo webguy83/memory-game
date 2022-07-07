@@ -13,7 +13,17 @@ export default function DataGroup(props: DataGroupProps) {
   const generateToggleButtons = () => {
     return props.buttonValues.map((buttonVal) => {
       return (
-        <MenuSelectionButton key={buttonVal} sx={{ flex: 1 }} value={buttonVal} aria-label={buttonVal}>
+        <MenuSelectionButton
+          key={buttonVal}
+          sx={(theme) => ({
+            flex: 1,
+            [theme.breakpoints.down('sm')]: {
+              fontSize: 16,
+            },
+          })}
+          value={buttonVal}
+          aria-label={buttonVal}
+        >
           {buttonVal}
         </MenuSelectionButton>
       );
@@ -21,8 +31,30 @@ export default function DataGroup(props: DataGroupProps) {
   };
   return (
     <Box>
-      <Typography variant='h3'>{props.groupLabel}</Typography>
-      <ToggleButtonGroup sx={{ display: 'flex', gap: 3.75, mt: 2 }} exclusive aria-label={props.groupLabel} onChange={props.handleChange} value={props.groupValue}>
+      <Typography
+        variant='h3'
+        sx={(theme) => ({
+          [theme.breakpoints.down('sm')]: {
+            fontSize: 15,
+          },
+        })}
+      >
+        {props.groupLabel}
+      </Typography>
+      <ToggleButtonGroup
+        sx={(theme) => ({
+          display: 'flex',
+          gap: 3.5,
+          [theme.breakpoints.down('sm')]: {
+            gap: 1.875,
+          },
+          mt: 2,
+        })}
+        exclusive
+        aria-label={props.groupLabel}
+        onChange={props.handleChange}
+        value={props.groupValue}
+      >
         {generateToggleButtons()}
       </ToggleButtonGroup>
     </Box>

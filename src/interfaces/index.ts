@@ -1,7 +1,9 @@
+import { GameTheme, GridSize } from '../types';
+
 export interface GameConfigData {
-  gameTheme: string;
+  gameTheme: GameTheme;
   numOfPlayers: number;
-  gridSize: string;
+  gridSize: GridSize;
 }
 
 export interface Item {
@@ -9,4 +11,9 @@ export interface Item {
   index: number;
   selected: boolean;
   hasAlreadyBeenMatch: boolean;
+}
+
+export interface ResultsData {
+  label: string;
+  value: string;
 }

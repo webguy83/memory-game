@@ -3,16 +3,19 @@ import { InfoBlockContainer } from './InfoBlock.styles';
 
 interface InfoBlockProps {
   label: string;
-  value: number | string;
+  value: string;
+  highlight?: boolean;
+  isMultiplayer?: boolean;
 }
 
 export default function InfoBlock({ label, value }: InfoBlockProps) {
   return (
-    <Box sx={InfoBlockContainer}>
-      <Typography variant='body1' fontWeight={400}>
+    <Box className='info-block' sx={InfoBlockContainer}>
+      <Typography className='info-block-label' variant='body1' fontWeight={400}>
         {label}
       </Typography>
       <Typography
+        className='info-block-value'
         variant='body1'
         sx={(theme) => ({
           color: theme.palette.secondary.dark,

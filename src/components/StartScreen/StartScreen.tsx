@@ -5,8 +5,8 @@ import Logo from '../Logo/Logo';
 import DataGroup from './DataGroup/DataGroup';
 import GameButtonPrimary from '../Buttons/GameButtonPrimary';
 import { GameConfigData } from '../../interfaces';
-import { GameTheme, GridSize } from '../../enums';
 import { GroupOfButtonStyles, BackgroundStyles, ContainerStyles } from './StartScreen.styles';
+import { GameTheme, GridSize } from '../../types';
 
 interface StartScreenProps {
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
@@ -16,8 +16,8 @@ interface StartScreenProps {
 
 export default function StartScreen({ setIsPlaying, setGameConfigData, gameConfigData }: StartScreenProps) {
   const [numOfPlayers, setNumOfPlayers] = useState<string>(gameConfigData.numOfPlayers.toString());
-  const [gameTheme, setGameTheme] = useState(gameConfigData.gameTheme);
-  const [gridSize, setGridSize] = useState(gameConfigData.gridSize);
+  const [gameTheme, setGameTheme] = useState<GameTheme>(gameConfigData.gameTheme);
+  const [gridSize, setGridSize] = useState<GridSize>(gameConfigData.gridSize);
 
   const handlePlayers = (_evt: MouseEvent<HTMLElement>, newNumOfPlayers: string) => {
     if (newNumOfPlayers) {
@@ -53,10 +53,19 @@ export default function StartScreen({ setIsPlaying, setGameConfigData, gameConfi
             <Logo lightColor />
           </Typography>
           <Box width='100%' sx={GroupOfButtonStyles}>
-            <DataGroup groupLabel='Select Theme' groupValue={gameTheme} handleChange={handleGameTheme} buttonValues={[GameTheme.Numbers, GameTheme.Icons]} />
+            <DataGroup groupLabel='Select Theme' groupValue={gameTheme} handleChange={handleGameTheme} buttonValues={['Numbers', 'Icons']} />
             <DataGroup groupLabel='Number of Players' groupValue={numOfPlayers} handleChange={handlePlayers} buttonValues={['1', '2', '3', '4']} />
-            <DataGroup groupLabel='Grid Size' groupValue={gridSize} handleChange={handleGridSize} buttonValues={[GridSize.four, GridSize.six]} />
-            <GameButtonPrimary onClick={startGameClick}>Start Game</GameButtonPrimary>
+            <DataGroup groupLabel='Grid Size' groupValue={gridSize} handleChange={handleGridSize} buttonValues={['4x4', '6x6']} />
+            <GameButtonPrimary
+              sx={(theme) => ({
+                [theme.breakpoints.down('sm')]: {
+                  fontSize: 18,
+                },
+              })}
+              onClick={startGameClick}
+            >
+              Start Game
+            </GameButtonPrimary>
           </Box>
         </Box>
       </Container>

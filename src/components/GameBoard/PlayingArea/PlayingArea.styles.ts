@@ -1,6 +1,6 @@
 import { SxProps, Theme } from '@mui/material';
 
-export const GridItemStyle: SxProps<Theme> = {
+export const GridItemStyle = {
   padding: '1% !important',
 };
 

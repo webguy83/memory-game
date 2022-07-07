@@ -8,12 +8,18 @@ export const GameBoardContainerStyles = {
   minHeight: '100vh',
 };
 
-export const HeaderStyles: SxProps<Theme> = {
+export const HeaderStyles: SxProps<Theme> = (theme) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-};
+  [theme.breakpoints.down('smalltablet')]: {
+    '& .logo-container': {
+      width: 92,
+      height: 30,
+    },
+  },
+});
 
 export const ButtonStyles = {
   px: 3,
@@ -22,7 +28,6 @@ export const ButtonStyles = {
 
 export const HeaderButtonStyles = {
   fontSize: 20,
-  ml: 'auto',
   mr: 2,
 };
 
@@ -33,7 +38,7 @@ export const FooterStyles: SxProps<Theme> = {
   width: '100%',
 };
 
-export const ModalStyles: SxProps<Theme> = {
+export const ModalStyles = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -48,3 +53,18 @@ export const ModalStyles: SxProps<Theme> = {
   borderRadius: 5,
   p: 7,
 };
+
+export const InfoBlockContainerStyles: SxProps<Theme> = (theme) => ({
+  [theme.breakpoints.down('sm')]: {
+    '& .info-block': {
+      flexDirection: 'column',
+      py: 0.8,
+      '&-label': {
+        fontSize: 15,
+      },
+      '&-value': {
+        fontSize: 24,
+      },
+    },
+  },
+});

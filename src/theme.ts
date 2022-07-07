@@ -1,5 +1,16 @@
 import { createTheme } from '@mui/material';
 
+declare module '@mui/material/styles' {
+  interface BreakpointOverrides {
+    xs: true;
+    sm: true;
+    md: true;
+    lg: true;
+    xl: true;
+    smalltablet: true;
+  }
+}
+
 const mainLightColour = '#FCFCFC';
 const primaryDarkColour = '#152938';
 
@@ -24,8 +35,9 @@ export const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 500,
-      md: 800,
+      smalltablet: 510,
+      sm: 610,
+      md: 900,
       lg: 1200,
       xl: 1536,
     },

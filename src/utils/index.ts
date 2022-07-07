@@ -1,7 +1,10 @@
-import { Item } from '../interfaces';
+import { icons } from './icons';
 
-export const shuffleItems = (items: number[]): Item[] => {
+export const shuffleItems = (items: any[], returnItem = false): any => {
   const outputItems = items.map((item, i) => {
+    if (returnItem) {
+      return item;
+    }
     return {
       value: item,
       index: i,
@@ -24,4 +27,26 @@ export const shuffleItems = (items: number[]): Item[] => {
 
 export const createNumbers = (gridSize: number) => {
   return Array.from(Array(gridSize).keys());
+};
+
+export const createIcons = (gridSize: number) => {
+  const shuffledIcons = shuffleItems(icons, true);
+  return shuffledIcons.slice(0, gridSize);
+};
+
+export const convertTime = (seconds: number) => {
+  let output = '';
+  const secs = seconds % 60;
+  const mins = Math.floor(seconds / 60) % 60;
+  const hours = Math.floor(seconds / 3600);
+
+  function addLeadingZeroes(time: number) {
+    return time < 10 ? `0${time}` : time;
+  }
+  if (hours > 0) {
+    output += `${hours}:`;
+  }
+  output += `${mins}:${addLeadingZeroes(secs)}`;
+
+  return output;
 };

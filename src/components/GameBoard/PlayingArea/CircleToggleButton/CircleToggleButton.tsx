@@ -56,11 +56,15 @@ export default function CircleToggleButtonContainer({ content, setSelectedItems,
     >
       <Box
         component='span'
-        sx={
-          {
-            // visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
-          }
-        }
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          '& .MuiSvgIcon-root': {
+            width: '40%',
+            height: 'auto',
+          },
+          visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
+        }}
       >
         {content.value}
       </Box>

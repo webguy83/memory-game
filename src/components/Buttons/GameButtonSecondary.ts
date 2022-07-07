@@ -10,4 +10,7 @@ export default styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.secondary.contrastText,
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 18,
+  },
 }));
