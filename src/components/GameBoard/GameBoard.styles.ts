@@ -34,6 +34,7 @@ export const HeaderButtonStyles = {
 export const FooterStyles: SxProps<Theme> = {
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'flex-end',
   gap: '10px',
   width: '100%',
 };
@@ -68,3 +69,17 @@ export const InfoBlockContainerStyles: SxProps<Theme> = (theme) => ({
     },
   },
 });
+
+export const PlayerBlockContainerStyle: SxProps<Theme> = {
+  '&::before': {
+    content: '""',
+    display: 'block',
+    width: 0,
+    height: 0,
+    border: 19,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    borderBottomColor: 'primary.main',
+    mx: 'auto',
+  },
+};

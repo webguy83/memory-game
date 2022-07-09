@@ -5,7 +5,6 @@ interface InfoBlockProps {
   label: string;
   value: string;
   highlight?: boolean;
-  isMultiplayer?: boolean;
 }
 
 export default function InfoBlock({ label, value }: InfoBlockProps) {

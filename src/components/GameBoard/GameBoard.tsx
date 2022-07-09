@@ -2,17 +2,22 @@ import { Box, Modal, Container, Stack } from '@mui/material';
 import GameButtonSecondary from '../Buttons/GameButtonSecondary';
 import GameButtonPrimary from '../Buttons/GameButtonPrimary';
 import Logo from '../Logo/Logo';
-import { ButtonStyles, FooterStyles, GameBoardContainerStyles, HeaderButtonStyles, HeaderStyles, InfoBlockContainerStyles, ModalStyles } from './GameBoard.styles';
+import { ButtonStyles, FooterStyles, GameBoardContainerStyles, HeaderButtonStyles, HeaderStyles, InfoBlockContainerStyles, ModalStyles, PlayerBlockContainerStyle } from './GameBoard.styles';
 import PlayingArea from './PlayingArea/PlayingArea';
 import { GameConfigData } from '../../interfaces';
 import InfoBlock from './InfoBlock/InfoBlock';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import { convertTime } from '../../utils';
 import Results from './Results/Results';
+import PlayerBlock from './PlayerBlock/PlayerBlock';
 
 interface GameBoardProps {
   gameConfigData: GameConfigData;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
+}
+
+interface GameScore {
+  [k: string]: number;
 }
 
 export default function GameBoard({ gameConfigData, setIsPlaying }: GameBoardProps) {
@@ -23,6 +28,21 @@ export default function GameBoard({ gameConfigData, setIsPlaying }: GameBoardPro
   const [openMenuModal, setOpenMenuModal] = useState(false);
   const [resetCircles, setResetCircles] = useState(false);
   const [pauseTimer, setPauseTimer] = useState(false);
+  const [currentPlayer, setCurrentPlayer] = useState(1);
+  const [gameScore, setGameScore] = useState<GameScore>({});
+
+  useEffect(() => {
+    const players = gameConfigData.numOfPlayers;
+    if (players > 1) {
+      const initScoreTable = Array.from(Array(players).keys())
+        .map((player) => (player += 1))
+        .reduce<GameScore>((scoreObj, num) => {
+          scoreObj[`p${num}`] = 0;
+          return scoreObj;
+        }, {});
+      setGameScore(initScoreTable);
+    }
+  }, [gameConfigData.numOfPlayers]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,6 +82,16 @@ export default function GameBoard({ gameConfigData, setIsPlaying }: GameBoardPro
     setPauseTimer(false);
   };
 
+  const renderPlayerBlocks = () => {
+    return Array.from({ length: gameConfigData.numOfPlayers }).map((_, i) => {
+      return (
+        <Box key={i} maxWidth={255} width='100%' sx={{ ...(i + 1 === currentPlayer && PlayerBlockContainerStyle) }}>
+          <PlayerBlock highlight={i + 1 === currentPlayer} label={`Player ${i + 1}`} value='0' />
+        </Box>
+      );
+    });
+  };
+
   return (
     <>
       <Container maxWidth='lg' sx={GameBoardContainerStyles}>
@@ -98,12 +128,18 @@ export default function GameBoard({ gameConfigData, setIsPlaying }: GameBoardPro
         </Box>
         <PlayingArea setResetCircles={setResetCircles} resetCircles={resetCircles} gameConfigData={gameConfigData} setNumOfMoves={setNumOfMoves} setGameEnded={setGameEnded} />
         <Box component='footer' sx={FooterStyles}>
-          <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
-            <InfoBlock label='Time' value={convertTime(gameSeconds)} />
-          </Box>
-          <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
-            <InfoBlock label='Moves' value={numOfMoves.toString()} />
-          </Box>
+          {gameConfigData.numOfPlayers < 2 ? (
+            <>
+              <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
+                <InfoBlock label='Time' value={convertTime(gameSeconds)} />
+              </Box>
+              <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
+                <InfoBlock label='Moves' value={numOfMoves.toString()} />
+              </Box>
+            </>
+          ) : (
+            renderPlayerBlocks()
+          )}
         </Box>
       </Container>
       <Modal open={openResultsModal} aria-labelledby='modal-results-title' aria-describedby='modal-results-description'>
