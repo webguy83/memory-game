@@ -153,7 +153,7 @@ export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnde
           sx={(theme) => ({
             ...GridItemStyle,
             fontSize: gridSizeNum === 4 ? 56 : 44,
-            [theme.breakpoints.down('sm')]: {
+            [theme.breakpoints.down('smalltablet')]: {
               fontSize: gridSizeNum === 4 ? 40 : 24,
             },
           })}
@@ -164,7 +164,7 @@ export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnde
     });
   };
   return (
-    <Box maxWidth={520}>
+    <Box component='main' maxWidth={520}>
       <Grid sx={GridContainerStyles} container spacing={2}>
         {generateGridItems()}
       </Grid>

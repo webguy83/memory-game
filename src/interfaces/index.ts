@@ -16,10 +16,12 @@ export interface Item {
 export interface ResultsData {
   label: string;
   value: string;
+  highlight: boolean;
 }
 
 export interface GamePlayerStat {
   name: string;
+  fullName: string;
   score: number;
   currentPlayer: boolean;
 }

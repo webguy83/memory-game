@@ -1,13 +1,13 @@
-import { Box, Modal, Container, Stack } from '@mui/material';
+import { Box, Modal, Container, Stack, Typography } from '@mui/material';
 import GameButtonSecondary from '../Buttons/GameButtonSecondary';
 import GameButtonPrimary from '../Buttons/GameButtonPrimary';
 import Logo from '../Logo/Logo';
 import { ButtonStyles, FooterStyles, GameBoardContainerStyles, HeaderButtonStyles, HeaderStyles, InfoBlockContainerStyles, ModalStyles, applyTriangleStyles } from './GameBoard.styles';
 import PlayingArea from './PlayingArea/PlayingArea';
-import { GameConfigData, GamePlayerStat } from '../../interfaces';
+import { GameConfigData, GamePlayerStat, ResultsData } from '../../interfaces';
 import InfoBlock from './InfoBlock/InfoBlock';
 import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { convertTime } from '../../utils';
+import { convertTime, convertPlayerName } from '../../utils';
 import Results from './Results/Results';
 import PlayerBlock from './PlayerBlock/PlayerBlock';
 
@@ -35,8 +35,10 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
     const numOfPlayers = gameConfigData.numOfPlayers;
     if (isMultiPlayer) {
       const gamePlayerStats: GamePlayerStat[] = Array.from(Array(numOfPlayers).keys()).map((index) => {
+        const name = `P${index + 1}`;
         return {
-          name: `P${index + 1}`,
+          name,
+          fullName: convertPlayerName(name),
           score: 0,
           currentPlayer: false,
         };
@@ -51,22 +53,26 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
   }, [resetGameStats]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!gameEnded && !pauseTimer) {
-        setGameSeconds((prevGameSeconds) => {
-          return (prevGameSeconds += 1);
-        });
+    if (!isMultiPlayer) {
+      const interval = setInterval(() => {
+        if (!gameEnded && !pauseTimer) {
+          setGameSeconds((prevGameSeconds) => {
+            return (prevGameSeconds += 1);
+          });
+        }
+      }, 1000);
+      if (pauseTimer || gameEnded) {
+        clearInterval(interval);
       }
-    }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [gameEnded, isMultiPlayer, pauseTimer, resetCircles]);
+
+  useEffect(() => {
     if (gameEnded) {
-      clearInterval(interval);
       setOpenResultsModal(true);
     }
-    if (pauseTimer) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [gameEnded, pauseTimer, resetCircles]);
+  }, [gameEnded]);
 
   const restartGameClick: MouseEventHandler<HTMLButtonElement> = () => {
     setNumOfMoves(0);
@@ -92,11 +98,53 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
   const renderPlayerBlocks = () => {
     return gameStats.map((gamePlayerStat) => {
       return (
-        <Box key={gamePlayerStat.name} maxWidth={255} width='100%' sx={(theme) => ({ ...(gamePlayerStat.currentPlayer && applyTriangleStyles(theme)) })}>
+        <Box key={gamePlayerStat.name} display='flex' flexDirection='column' maxWidth={255} width='100%' sx={(theme) => ({ ...(gamePlayerStat.currentPlayer && applyTriangleStyles(theme)) })}>
           <PlayerBlock highlight={gamePlayerStat.currentPlayer} label={gamePlayerStat.name} score={gamePlayerStat.score} />
+          <Typography
+            fontSize={13}
+            letterSpacing={5}
+            mt={2.875}
+            textTransform='uppercase'
+            textAlign='center'
+            display={{ xs: 'none', md: 'inline' }}
+            sx={{ visibility: gamePlayerStat.currentPlayer ? 'visible' : 'hidden', color: 'secondary.dark' }}
+          >
+            Current Turn
+          </Typography>
         </Box>
       );
     });
+  };
+
+  const sortPlayerScores = (stats: GamePlayerStat[]) => {
+    const outputStats = [...stats];
+    return outputStats.sort((a, b) => b.score - a.score);
+  };
+
+  const renderResults = () => {
+    const sortedStats = sortPlayerScores(gameStats);
+    const topPlayer = sortedStats[0];
+    let amountOfWinners = 0;
+    const resultsData: ResultsData[] = sortedStats.map((stat) => {
+      const output = {
+        label: stat.fullName,
+        value: `${stat.score} Pairs`,
+        highlight: false,
+      };
+      if (stat.score === topPlayer.score) {
+        amountOfWinners++;
+        output.label += ' (Winner!)';
+        output.highlight = true;
+      }
+      return output;
+    });
+    let titleText = "It's a Tie!";
+    if (amountOfWinners < 2) {
+      titleText = `${topPlayer.fullName} Wins!`;
+    }
+    const descriptionText = 'Game over! Here are the results…';
+
+    return <Results restartGameClick={restartGameClick} setIsPlaying={setIsPlaying} titleText={titleText} descriptionText={descriptionText} data={resultsData} />;
   };
 
   return (
@@ -140,10 +188,10 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
           {!isMultiPlayer ? (
             <>
               <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
-                <InfoBlock label='Time' value={convertTime(gameSeconds)} />
+                <InfoBlock label='Time' value={convertTime(gameSeconds)} highlight={false} />
               </Box>
               <Box maxWidth={255} width='100%' sx={InfoBlockContainerStyles}>
-                <InfoBlock label='Moves' value={numOfMoves.toString()} />
+                <InfoBlock label='Moves' value={numOfMoves.toString()} highlight={false} />
               </Box>
             </>
           ) : (
@@ -152,22 +200,29 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
         </Box>
       </Container>
       <Modal open={openResultsModal} aria-labelledby='modal-results-title' aria-describedby='modal-results-description'>
-        <Results
-          restartGameClick={restartGameClick}
-          setIsPlaying={setIsPlaying}
-          data={[
-            { label: 'Time Elapsed', value: convertTime(gameSeconds) },
-            { label: 'Moves Taken', value: `${numOfMoves} Moves` },
-          ]}
-        />
+        <>
+          {!isMultiPlayer && gameEnded && (
+            <Results
+              restartGameClick={restartGameClick}
+              setIsPlaying={setIsPlaying}
+              titleText='You did it!'
+              descriptionText="Game over! Here's how you got on…"
+              data={[
+                { label: 'Time Elapsed', value: convertTime(gameSeconds), highlight: false },
+                { label: 'Moves Taken', value: `${numOfMoves} Moves`, highlight: false },
+              ]}
+            />
+          )}
+          {isMultiPlayer && gameEnded && renderResults()}
+        </>
       </Modal>
       <Modal open={openMenuModal} onClose={onMenuModalClose}>
         <Box
           sx={(theme) => ({
             ...ModalStyles,
             p: 4,
-            maxWidth: 360,
-            minWidth: 'auto',
+            maxWidth: 315,
+            minWidth: 280,
             [theme.breakpoints.down('sm')]: {
               p: 3,
             },

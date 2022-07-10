@@ -48,7 +48,7 @@ export const ModalStyles = {
   flexDirection: 'column',
   gap: 5,
   maxWidth: 600,
-  minWidth: 360,
+  minWidth: 315,
   transform: 'translate(-50%, -50%)',
   bgcolor: '#F2F2F2',
   borderRadius: 5,

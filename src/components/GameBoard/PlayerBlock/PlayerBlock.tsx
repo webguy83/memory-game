@@ -6,16 +6,20 @@ import { PlayerBlockHighlightStyle } from './PlayerBlock.styles';
 interface PlayerBlockProps {
   label: string;
   score: number;
-  highlight?: boolean;
+  highlight: boolean;
 }
 
 export default function PlayerBlock({ label, score, highlight }: PlayerBlockProps) {
   return (
     <Box
+      bgcolor='#DFE7EC'
       className='player-block'
       sx={(theme) => ({
         ...InfoBlockContainer,
         ...(highlight && PlayerBlockHighlightStyle),
+        transition: theme.transitions.create(['background-color', 'opacity'], {
+          duration: theme.transitions.duration.standard,
+        }),
         [theme.breakpoints.down('md')]: {
           py: 1.345,
         },

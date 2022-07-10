@@ -11,6 +11,8 @@ interface ModalContentProps {
   data: ResultsData[];
   restartGameClick: MouseEventHandler<HTMLButtonElement>;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  titleText: string;
+  descriptionText: string;
 }
 
 export default forwardRef<HTMLDivElement, ModalContentProps>((props, _ref) => {
@@ -26,15 +28,15 @@ export default forwardRef<HTMLDivElement, ModalContentProps>((props, _ref) => {
     >
       <Box>
         <Typography id='modal-results-title' textAlign='center' variant='h1' component='h2' sx={ResultsTitleStyle}>
-          You did it!
+          {props.titleText}
         </Typography>
         <Typography variant='body1' textAlign='center' id='modal-results-description' sx={ResultsDescriptionStyle}>
-          Game over! Here's how you got on…
+          {props.descriptionText}
         </Typography>
       </Box>
       <Stack spacing={{ xs: 1, sm: 2 }} sx={ResultsStackStyle}>
         {props.data.map((dataBlock) => {
-          return <InfoBlock key={dataBlock.label} label={dataBlock.label} value={dataBlock.value} />;
+          return <InfoBlock key={dataBlock.label} label={dataBlock.label} value={dataBlock.value} highlight={dataBlock.highlight} />;
         })}
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
