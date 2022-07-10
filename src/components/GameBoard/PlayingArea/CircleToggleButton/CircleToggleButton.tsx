@@ -20,11 +20,11 @@ const CircleToggleButton = styled(ToggleButton)(({ theme }) => ({
 
 interface CircleToggleButtonProps {
   content: Item;
-  setSelectedItems: Dispatch<SetStateAction<Item[]>>;
+  setAllItems: Dispatch<SetStateAction<Item[]>>;
   preventGamePlay: boolean;
 }
 
-export default function CircleToggleButtonContainer({ content, setSelectedItems, preventGamePlay }: CircleToggleButtonProps) {
+export default function CircleToggleButtonContainer({ content, setAllItems, preventGamePlay }: CircleToggleButtonProps) {
   return (
     <CircleToggleButton
       sx={(theme) => ({
@@ -42,7 +42,7 @@ export default function CircleToggleButtonContainer({ content, setSelectedItems,
       selected={content.selected || content.hasAlreadyBeenMatch}
       onChange={() => {
         if (!content.selected && !content.hasAlreadyBeenMatch && !preventGamePlay) {
-          setSelectedItems((previousSelectedItems) => {
+          setAllItems((previousSelectedItems) => {
             const mappedVals = previousSelectedItems.map((item) => {
               if (item.index === content.index) {
                 item.selected = true;
@@ -63,7 +63,7 @@ export default function CircleToggleButtonContainer({ content, setSelectedItems,
             width: '40%',
             height: 'auto',
           },
-          visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
+          //visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
         }}
       >
         {content.value}

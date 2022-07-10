@@ -17,3 +17,9 @@ export interface ResultsData {
   label: string;
   value: string;
 }
+
+export interface GamePlayerStat {
+  name: string;
+  score: number;
+  currentPlayer: boolean;
+}

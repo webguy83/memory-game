@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { GameConfigData, Item } from '../../../interfaces';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { GameConfigData, GamePlayerStat, Item } from '../../../interfaces';
 import { createIcons, createNumbers, shuffleItems } from '../../../utils';
 import CircleToggleButton from './CircleToggleButton/CircleToggleButton';
 import { GridContainerStyles, GridItemStyle } from './PlayingArea.styles';
@@ -11,22 +11,25 @@ interface PlayingAreaProps {
   setGameEnded: Dispatch<SetStateAction<boolean>>;
   resetCircles: boolean;
   setResetCircles: Dispatch<SetStateAction<boolean>>;
+  setGameStats: (gamePlayerStats: GamePlayerStat[]) => void;
+  gameStats: GamePlayerStat[];
+  isMultiPlayer: boolean;
 }
 
-export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnded, resetCircles, setResetCircles }: PlayingAreaProps) {
+export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnded, resetCircles, setResetCircles, setGameStats, gameStats, isMultiPlayer }: PlayingAreaProps) {
   const gridSizeNum = gameConfigData.gridSize === '6x6' ? 6 : 4;
-  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const [allItems, setAllItems] = useState<Item[]>([]);
   const [preventGamePlay, setPreventGamePlay] = useState<boolean>(false);
 
   useEffect(() => {
     if (resetCircles) {
-      const mappedSelectedItems = selectedItems.map((item) => {
+      const mappedAllItems = allItems.map((item) => {
         item.hasAlreadyBeenMatch = false;
         return item;
       });
-      setSelectedItems(mappedSelectedItems);
+      setAllItems(mappedAllItems);
     }
-  }, [resetCircles, selectedItems]);
+  }, [resetCircles, allItems]);
 
   useEffect(() => {
     const themeItems = [];
@@ -38,44 +41,110 @@ export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnde
     }
 
     const randomizeItems = shuffleItems(themeItems);
-    setSelectedItems(randomizeItems);
+    setAllItems(randomizeItems);
   }, [gameConfigData.gameTheme, gridSizeNum, resetCircles]);
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    const filteredItemsBySelected = selectedItems.filter((item) => item.selected);
-    setResetCircles(false);
-    if (filteredItemsBySelected.length === 2) {
+  const goToNextPlayer = useCallback(
+    (stats: GamePlayerStat[], numOfPlayers: number) => {
+      const modifiedStats = [...stats];
+      const currentPlayerIndex = modifiedStats.findIndex((stat) => stat.currentPlayer);
+      modifiedStats[currentPlayerIndex].currentPlayer = false;
+      if (currentPlayerIndex + 1 >= numOfPlayers) {
+        modifiedStats[0].currentPlayer = true;
+      } else {
+        modifiedStats[currentPlayerIndex + 1].currentPlayer = true;
+      }
+      setGameStats(modifiedStats);
+    },
+    [setGameStats]
+  );
+
+  const adjustSelectedItems = useCallback(
+    (firstItem: Item, secondItem: Item) => {
+      if (firstItem.value === secondItem.value) {
+        firstItem.hasAlreadyBeenMatch = true;
+        secondItem.hasAlreadyBeenMatch = true;
+        if (isMultiPlayer) {
+          const stats = [...gameStats];
+          const currentPlayer = stats.find((stat) => stat.currentPlayer);
+          currentPlayer!.score++;
+          const adjustedStats = stats.map((stat) => {
+            if (currentPlayer?.name === stat.name) {
+              return currentPlayer;
+            }
+            return stat;
+          });
+          setGameStats(adjustedStats);
+        }
+      } else {
+        if (isMultiPlayer) {
+          goToNextPlayer(gameStats, gameConfigData.numOfPlayers);
+        }
+      }
+      firstItem.selected = false;
+      secondItem.selected = false;
+    },
+    [gameConfigData.numOfPlayers, gameStats, goToNextPlayer, isMultiPlayer, setGameStats]
+  );
+
+  const gameWon = useCallback(
+    (timer: NodeJS.Timeout) => {
+      clearTimeout(timer);
+      setGameEnded(true);
+    },
+    [setGameEnded]
+  );
+
+  const applyAllNewItems = useCallback(
+    (firstItem: Item, secondItem: Item, timer: NodeJS.Timeout) => {
+      const newAllItems = allItems.map((item) => {
+        if (item.index === firstItem.index) {
+          return firstItem;
+        } else if (item.index === secondItem.index) {
+          return secondItem;
+        } else {
+          return item;
+        }
+      });
+
+      setAllItems(newAllItems);
+      setPreventGamePlay(false);
+
+      const everythingBeenMatched = newAllItems.every((item) => item.hasAlreadyBeenMatch);
+      if (everythingBeenMatched) {
+        gameWon(timer);
+      }
+    },
+    [allItems, gameWon]
+  );
+
+  const incrementMoves = useCallback(() => {
+    if (!isMultiPlayer) {
       setNumOfMoves((prevNumberOfMoves) => {
         return (prevNumberOfMoves += 1);
       });
+    }
+  }, [isMultiPlayer, setNumOfMoves]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const filteredItemsBySelected = allItems.filter((item) => item.selected);
+    setResetCircles(false);
+    if (filteredItemsBySelected.length === 2) {
+      incrementMoves();
       setPreventGamePlay(true);
       timer = setTimeout(() => {
-        const newSelectedItems = selectedItems.map((item) => {
-          if (filteredItemsBySelected[0].value === filteredItemsBySelected[1].value) {
-            if (item.value === filteredItemsBySelected[0].value || item.value === filteredItemsBySelected[1].value) {
-              item.hasAlreadyBeenMatch = true;
-            }
-          }
-          item.selected = false;
-          return item;
-        });
-
-        setSelectedItems(newSelectedItems);
-        setPreventGamePlay(false);
-
-        const everythingBeenMatched = newSelectedItems.every((item) => item.hasAlreadyBeenMatch);
-        if (everythingBeenMatched) {
-          clearTimeout(timer);
-          setGameEnded(true);
-        }
+        const firstItemSelected = filteredItemsBySelected[0];
+        const secondItemSelected = filteredItemsBySelected[1];
+        adjustSelectedItems(firstItemSelected, secondItemSelected);
+        applyAllNewItems(firstItemSelected, secondItemSelected, timer);
       }, 500);
     }
     return () => clearTimeout(timer);
-  }, [selectedItems, setGameEnded, setNumOfMoves, setResetCircles]);
+  }, [adjustSelectedItems, allItems, applyAllNewItems, incrementMoves, setResetCircles]);
 
   const generateGridItems = () => {
-    return selectedItems.map((item) => {
+    return allItems.map((item) => {
       return (
         <Grid
           key={item.index}
@@ -89,7 +158,7 @@ export default function PlayingArea({ gameConfigData, setNumOfMoves, setGameEnde
             },
           })}
         >
-          <CircleToggleButton setSelectedItems={setSelectedItems} preventGamePlay={preventGamePlay} content={item} />
+          <CircleToggleButton setAllItems={setAllItems} preventGamePlay={preventGamePlay} content={item} />
         </Grid>
       );
     });

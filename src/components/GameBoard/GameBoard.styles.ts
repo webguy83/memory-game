@@ -70,16 +70,30 @@ export const InfoBlockContainerStyles: SxProps<Theme> = (theme) => ({
   },
 });
 
-export const PlayerBlockContainerStyle: SxProps<Theme> = {
-  '&::before': {
-    content: '""',
-    display: 'block',
-    width: 0,
-    height: 0,
-    border: 19,
-    borderStyle: 'solid',
-    borderColor: 'transparent',
-    borderBottomColor: 'primary.main',
-    mx: 'auto',
-  },
+export const applyTriangleStyles = (theme: Theme) => {
+  return {
+    '&::before': {
+      content: '""',
+      display: 'block',
+      width: 0,
+      height: 0,
+      border: 19,
+      [theme.breakpoints.down('md')]: {
+        border: 12,
+        borderStyle: 'solid',
+        borderColor: 'transparent',
+        borderBottomColor: 'primary.main',
+      },
+      [theme.breakpoints.down('sm')]: {
+        border: 8,
+        borderStyle: 'solid',
+        borderColor: 'transparent',
+        borderBottomColor: 'primary.main',
+      },
+      borderStyle: 'solid',
+      borderColor: 'transparent',
+      borderBottomColor: 'primary.main',
+      mx: 'auto',
+    },
+  };
 };

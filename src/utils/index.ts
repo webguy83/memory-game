@@ -50,3 +50,7 @@ export const convertTime = (seconds: number) => {
 
   return output;
 };
+
+export const convertPlayerName = (name: string) => {
+  return name.replace(/P/, 'Player ');
+};
