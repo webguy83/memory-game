@@ -63,7 +63,7 @@ export default function CircleToggleButtonContainer({ content, setAllItems, prev
             width: '40%',
             height: 'auto',
           },
-          //visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
+          visibility: content.selected || content.hasAlreadyBeenMatch ? 'visible' : 'hidden',
         }}
       >
         {content.value}
