@@ -1,9 +1,5 @@
 import { SxProps, Theme } from '@mui/material';
 
-export const BackgroundStyles: SxProps<Theme> = {
-  backgroundColor: (theme) => theme.palette.primary.dark,
-};
-
 export const ContainerStyles: SxProps<Theme> = (theme) => ({
   minHeight: '100vh',
   display: 'flex',

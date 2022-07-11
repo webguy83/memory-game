@@ -37,6 +37,11 @@ export default function CircleToggleButtonContainer({ content, setAllItems, prev
           backgroundColor: !preventGamePlay ? theme.palette.secondary.main : theme.palette.secondary.dark,
           cursor: !preventGamePlay ? 'pointer' : 'default',
         },
+        '@media (hover: none)': {
+          '&:hover': {
+            backgroundColor: 'secondary.dark',
+          },
+        },
       })}
       value='check'
       selected={content.selected || content.hasAlreadyBeenMatch}

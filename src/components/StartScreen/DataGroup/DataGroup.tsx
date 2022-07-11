@@ -33,6 +33,7 @@ export default function DataGroup(props: DataGroupProps) {
     <Box>
       <Typography
         variant='h3'
+        component='h2'
         sx={(theme) => ({
           [theme.breakpoints.down('sm')]: {
             fontSize: 15,

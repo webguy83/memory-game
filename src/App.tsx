@@ -1,5 +1,5 @@
 import StartScreen from './components/StartScreen/StartScreen';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material';
 import { theme } from './theme';
 import { useState } from 'react';
 import { GameConfigData } from './interfaces';
@@ -15,7 +15,12 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {!isPlaying && <StartScreen setIsPlaying={setIsPlaying} gameConfigData={gameConfigData} setGameConfigData={setGameConfigData} />}
+      {!isPlaying && (
+        <>
+          <GlobalStyles styles={{ body: { backgroundColor: theme.palette.primary.dark } }} />
+          <StartScreen setIsPlaying={setIsPlaying} gameConfigData={gameConfigData} setGameConfigData={setGameConfigData} />
+        </>
+      )}
       {isPlaying && <GameBoard isMultiPlayer={gameConfigData.numOfPlayers > 1} setIsPlaying={setIsPlaying} gameConfigData={gameConfigData} />}
     </ThemeProvider>
   );
