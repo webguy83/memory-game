@@ -165,6 +165,7 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
             sx={(theme) => ({
               ...ButtonStyles,
               ...HeaderButtonStyles,
+              mr: 0,
               fontSize: 16,
               [theme.breakpoints.up('sm')]: {
                 display: 'none',
