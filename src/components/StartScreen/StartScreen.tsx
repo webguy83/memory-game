@@ -47,7 +47,16 @@ export default function StartScreen({ setIsPlaying, setGameConfigData, gameConfi
   };
   return (
     <Container maxWidth='md' sx={ContainerStyles}>
-      <Box display='flex' flexDirection='column' alignItems='center'>
+      <Box
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+        sx={{
+          '@media(max-height: 415px)': {
+            mt: 4.375,
+          },
+        }}
+      >
         <Box component='header'>
           <Typography variant='h1'>
             <Logo lightColor />

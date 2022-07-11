@@ -200,7 +200,7 @@ export default function GameBoard({ gameConfigData, setIsPlaying, isMultiPlayer 
           )}
         </Box>
       </Container>
-      <Modal open={openResultsModal} aria-labelledby='modal-results-title' aria-describedby='modal-results-description'>
+      <Modal sx={{ overflow: 'scroll' }} open={openResultsModal} aria-labelledby='modal-results-title' aria-describedby='modal-results-description'>
         <>
           {!isMultiPlayer && gameEnded && (
             <Results
