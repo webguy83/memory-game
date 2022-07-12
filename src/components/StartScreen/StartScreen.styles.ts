@@ -1,7 +1,7 @@
 import { SxProps, Theme } from '@mui/material';
 
 export const ContainerStyles: SxProps<Theme> = (theme) => ({
-  minHeight: 'calc(100vh - 30px)',
+  minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',

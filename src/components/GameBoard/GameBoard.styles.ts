@@ -5,7 +5,7 @@ export const GameBoardContainerStyles = {
   flexDirection: 'column',
   justifyContent: 'space-around',
   alignItems: 'center',
-  minHeight: 'calc(100vh - 30px)',
+  minHeight: '100vh',
   gap: 3.75,
 };
 
