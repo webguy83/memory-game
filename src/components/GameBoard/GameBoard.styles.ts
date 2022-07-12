@@ -5,11 +5,8 @@ export const GameBoardContainerStyles = {
   flexDirection: 'column',
   justifyContent: 'space-around',
   alignItems: 'center',
-  minHeight: '100vh',
-  '@media(max-height: 415px)': {
-    gap: 6.25,
-    mt: 3.75,
-  },
+  minHeight: 'calc(100vh - 30px)',
+  gap: 3.75,
 };
 
 export const HeaderStyles: SxProps<Theme> = (theme) => ({
@@ -57,10 +54,6 @@ export const ModalStyles = {
   bgcolor: '#F2F2F2',
   borderRadius: 5,
   p: 7,
-  '@media(max-height: 415px)': {
-    top: '0',
-    transform: 'translate(-50%, 0%)',
-  },
 };
 
 export const InfoBlockContainerStyles: SxProps<Theme> = (theme) => ({

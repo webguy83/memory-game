@@ -24,6 +24,10 @@ export default forwardRef<HTMLDivElement, ModalContentProps>((props, _ref) => {
           p: 3,
           gap: 2.5,
         },
+        '@media(max-height: 415px)': {
+          top: '0',
+          transform: 'translate(-50%, 0%)',
+        },
       })}
     >
       <Box>
